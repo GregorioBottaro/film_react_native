@@ -1,15 +1,23 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {TextInput, View, StyleSheet, Button} from "react-native";
+import { SearchBar } from 'react-native-elements';
 
-export default class Search extends React.Component {
-    render() {
-        return (
-            <View style={styles.main_container}>
-                <TextInput style={styles.textinput} placeholder='Titre du film'/>
-                <Button title='Rechercher' onPress={() => {}}/>
-            </View>
-        )
-    }
+
+export const Search = () => {
+    const [searchValue, setSeachValue] = useState('')
+    return (
+        <View style={styles.main_container}>
+            <SearchBar
+                placeholder="Rechercher un film"
+                onChangeText={(text) => setSeachValue(text)}
+                value={searchValue}
+                inputContainerStyle={styles.textinput}
+                containerStyle={styles.searchcontainer}
+                lightTheme 
+                onSubmitEditing={()=> alert(`Coucou ${searchValue}`)}
+            />
+        </View>
+    )
 }
 
 const styles = StyleSheet.create({
@@ -19,16 +27,29 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         paddingTop: 30,
         borderBottomLeftRadius: 8,
-        borderBottomRightRadius: 8
+        borderBottomRightRadius: 8,
+        zIndex: 1000,
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 3,
+        },
+        shadowOpacity: 0.34,
+        shadowRadius: 3,
     },
     textinput: {
-        marginLeft: 5,
-        marginRight: 5,
         height: 50,
         borderColor: '#000000',
         borderWidth: 0,
         paddingLeft: 5,
         backgroundColor: '#fff',
         borderRadius: 12,
+    },
+    searchcontainer: {
+        backgroundColor: 'transparent',
+        borderWidth: 0, //no effect
+        shadowColor: 'white', //no effect
+        borderBottomColor: 'transparent',
+        borderTopColor: 'transparent'
     }
 })
