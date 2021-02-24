@@ -1,29 +1,44 @@
-import React from "react";
-import { ImageBackground, StyleSheet, View, Text } from "react-native";
-import Carousel from "react-native-snap-carousel";
+import React, { useRef, useState, useEffect } from "react";
+import {
+  View,
+  Text,
+  Dimensions,
+  StyleSheet,
+  TouchableOpacity,
+  Platform,
+  ImageBackground,
+} from "react-native";
+import Carousel, { ParallaxImage } from "react-native-snap-carousel";
 
-const data = [
+const ENTRIES1 = [
   {
-    title: "Item 1",
-    text: "Text 1",
+    title: "Beautiful and dramatic Antelope Canyon",
+    subtitle: "Lorem ipsum dolor sit amet et nuncat mergitur",
+    illustration: "https://i.imgur.com/UYiroysl.jpg",
   },
   {
-    title: "Item 2",
-    text: "Text 2",
+    title: "Earlier this morning, NYC",
+    subtitle: "Lorem ipsum dolor sit amet",
+    illustration: "https://i.imgur.com/UPrs1EWl.jpg",
   },
   {
-    title: "Item 3",
-    text: "Text 3",
+    title: "White Pocket Sunset",
+    subtitle: "Lorem ipsum dolor sit amet et nuncat ",
+    illustration: "https://i.imgur.com/MABUbpDl.jpg",
   },
   {
-    title: "Item 4",
-    text: "Text 4",
+    title: "Acrocorinth, Greece",
+    subtitle: "Lorem ipsum dolor sit amet et nuncat mergitur",
+    illustration: "https://i.imgur.com/KZsmUi2l.jpg",
   },
   {
-    title: "Item 5",
-    text: "Text 5",
+    title: "The lone tree, majestic landscape of New Zealand",
+    subtitle: "Lorem ipsum dolor sit amet",
+    illustration: "https://i.imgur.com/2nCt3Sbl.jpg",
   },
 ];
+
+const { width: screenWidth } = Dimensions.get("window");
 
 const Home = (props) => {
   const image = {
@@ -31,56 +46,97 @@ const Home = (props) => {
       "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=2250&q=80",
   };
 
-  const renderItem = ({ item, index }) => {
+  const [entries, setEntries] = useState([]);
+  const carouselRef = useRef(null);
+
+  const goForward = () => {
+    carouselRef.current.snapToNext();
+  };
+
+  useEffect(() => {
+    setEntries(ENTRIES1);
+  }, []);
+
+  const renderItem = ({ item, index }, parallaxProps) => {
     return (
-      <View
-        style={{
-          backgroundColor: "floralwhite",
-          borderRadius: 5,
-          height: 250,
-          padding: 50,
-          marginLeft: 25,
-          marginRight: 25,
-        }}
-      >
-        <Text style={{ fontSize: 30 }}>{item.title}</Text>
-        <Text>{item.text}</Text>
+      <View style={styles.item}>
+        <ParallaxImage
+          source={{ uri: item.illustration }}
+          containerStyle={styles.imageContainer}
+          style={styles.image}
+          parallaxFactor={0.4}
+          {...parallaxProps}
+        />
+        <Text style={styles.titleCard} numberOfLines={2}>
+          {item.title}
+        </Text>
       </View>
     );
   };
 
   return (
-    <ImageBackground source={image} style={styles.content}>
-      <View>
-        <Text style={styles.text}>Vos derniers films consultés</Text>
-      </View>
-      <Carousel
-        layout={"default"}
-        // ref={(ref) => (this.carousel = ref)}
-        data={data}
-        sliderWidth={300}
-        itemWidth={300}
-        renderItem={renderItem}
-        // onSnapToItem={(index) => this.setState({ activeIndex: index })}
-      />
-    </ImageBackground>
+    <View style={{ flex: 5 }}>
+      <ImageBackground source={image} style={styles.imageBackground}>
+        <View>
+          <Text style={styles.text}>Vos derniers films consultés</Text>
+        </View>
+        <View style={styles.container}>
+          <TouchableOpacity onPress={goForward}>
+            <Text>go to next slide</Text>
+          </TouchableOpacity>
+          <Carousel
+            ref={carouselRef}
+            sliderWidth={screenWidth}
+            sliderHeight={screenWidth}
+            itemWidth={screenWidth - 60}
+            data={entries}
+            renderItem={renderItem}
+            hasParallaxImages={true}
+          />
+        </View>
+      </ImageBackground>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  content: {
-    flex: 5,
+  container: {
+    flex: 1,
+  },
+  item: {
+    width: screenWidth - 60,
+    height: screenWidth - 60,
+  },
+  imageContainer: {
+    flex: 1,
+    marginBottom: Platform.select({ ios: 0, android: 1 }), // Prevent a random Android rendering issue
+    backgroundColor: "white",
+    borderRadius: 8,
+  },
+  image: {
+    ...StyleSheet.absoluteFillObject,
+    resizeMode: "cover",
+  },
+  imageBackground: {
+    flex: 1,
     marginTop: -10,
     resizeMode: "cover",
-    alignItems: "center",
+    justifyContent: "center",
   },
   text: {
     color: "white",
     fontSize: 25,
     textAlign: "center",
     marginTop: 40,
-    marginBottom: 30,
+    marginBottom: 10,
     fontFamily: "Helvetica Neue",
+  },
+  titleCard: {
+    color: "white",
+    textAlign: "center",
+    marginTop: -45,
+    fontSize: 18,
+    fontWeight: "600",
   },
 });
 

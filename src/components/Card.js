@@ -1,8 +1,10 @@
 import React from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { urlImageMovie } from "../helpers/constants";
+import { Icon } from "react-native-elements";
 
 export const Card = (props) => {
-  const { title, release_date, poster_url } = props;
+  const { title, release_date, poster_path, vote_average } = props;
   return (
     <TouchableOpacity>
       <View style={styles.main_container}>
@@ -11,13 +13,20 @@ export const Card = (props) => {
             style={styles.picture}
             resizeMode={"contain"}
             source={{
-              uri: poster_url,
+              uri: urlImageMovie + poster_path,
             }}
           ></Image>
         </View>
         <View style={styles.desc}>
           <Text style={styles.desc_title}>{title}</Text>
           <Text style={styles.desc_date}> {release_date}</Text>
+        </View>
+        <View style={{ height: "100%", justifyContent: "center" }}>
+          {vote_average > 6.9 && (
+            <Text>
+              <Icon name="star" type="entypo" color="gold" size={24} />
+            </Text>
+          )}
         </View>
       </View>
     </TouchableOpacity>

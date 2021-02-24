@@ -1,12 +1,13 @@
 import React from "react";
-import { FlatList, StyleSheet, Text, View } from "react-native";
+import { FlatList, SafeAreaView, StyleSheet, Text, View } from "react-native";
 import { Card } from "./Card";
 import { EmptyResults } from "./EmptyResults";
 
 export const ListResults = (props) => {
   const { movies } = props;
+  console.log("movies", movies);
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       {movies.length > 0 ? (
         <View style={styles.listContainer}>
           <FlatList
@@ -17,7 +18,8 @@ export const ListResults = (props) => {
                 key={item.id}
                 title={item.title}
                 release_date={item.release_date}
-                poster_url={item.poster_url}
+                poster_path={item.poster_path}
+                vote_average={item.vote_average}
               />
             )}
           />
@@ -25,7 +27,7 @@ export const ListResults = (props) => {
       ) : (
         <EmptyResults />
       )}
-    </View>
+    </SafeAreaView>
   );
 };
 
