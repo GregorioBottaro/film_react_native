@@ -9,68 +9,52 @@ import {
   ImageBackground,
 } from "react-native";
 import Carousel, { ParallaxImage } from "react-native-snap-carousel";
-
-const ENTRIES1 = [
-  {
-    title: "Beautiful and dramatic Antelope Canyon",
-    subtitle: "Lorem ipsum dolor sit amet et nuncat mergitur",
-    illustration: "https://i.imgur.com/UYiroysl.jpg",
-  },
-  {
-    title: "Earlier this morning, NYC",
-    subtitle: "Lorem ipsum dolor sit amet",
-    illustration: "https://i.imgur.com/UPrs1EWl.jpg",
-  },
-  {
-    title: "White Pocket Sunset",
-    subtitle: "Lorem ipsum dolor sit amet et nuncat ",
-    illustration: "https://i.imgur.com/MABUbpDl.jpg",
-  },
-  {
-    title: "Acrocorinth, Greece",
-    subtitle: "Lorem ipsum dolor sit amet et nuncat mergitur",
-    illustration: "https://i.imgur.com/KZsmUi2l.jpg",
-  },
-  {
-    title: "The lone tree, majestic landscape of New Zealand",
-    subtitle: "Lorem ipsum dolor sit amet",
-    illustration: "https://i.imgur.com/2nCt3Sbl.jpg",
-  },
-];
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const { width: screenWidth } = Dimensions.get("window");
 
 const Home = (props) => {
+  const { itemClicked } = props;
   const image = {
     uri:
       "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=2250&q=80",
   };
 
-  const [entries, setEntries] = useState([]);
+  const [moviesChecked, setMoviesChecked] = useState([]);
   const carouselRef = useRef(null);
 
   const goForward = () => {
     carouselRef.current.snapToNext();
   };
 
+  const getMoviesCheked = async () => {
+    const arrMoviesChecked = await AsyncStorage.getItem("LAST_MOVIES_CHECK");
+    if (arrMoviesChecked) {
+      setMoviesChecked(JSON.parse(arrMoviesChecked));
+    }
+  };
+
   useEffect(() => {
-    setEntries(ENTRIES1);
+    getMoviesCheked();
   }, []);
 
   const renderItem = ({ item, index }, parallaxProps) => {
+    console.log("moviesChecked", moviesChecked);
     return (
-      <View style={styles.item}>
-        <ParallaxImage
-          source={{ uri: item.illustration }}
-          containerStyle={styles.imageContainer}
-          style={styles.image}
-          parallaxFactor={0.4}
-          {...parallaxProps}
-        />
-        <Text style={styles.titleCard} numberOfLines={2}>
-          {item.title}
-        </Text>
-      </View>
+      <TouchableOpacity onPress={() => itemClicked(item.id)}>
+        <View style={styles.item}>
+          <ParallaxImage
+            source={{ uri: item.illustration }}
+            containerStyle={styles.imageContainer}
+            style={styles.image}
+            parallaxFactor={0.4}
+            {...parallaxProps}
+          />
+          <Text style={styles.titleCard} numberOfLines={2}>
+            {item.title}
+          </Text>
+        </View>
+      </TouchableOpacity>
     );
   };
 
@@ -89,7 +73,7 @@ const Home = (props) => {
             sliderWidth={screenWidth}
             sliderHeight={screenWidth}
             itemWidth={screenWidth - 60}
-            data={entries}
+            data={moviesChecked}
             renderItem={renderItem}
             hasParallaxImages={true}
           />

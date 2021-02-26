@@ -15,7 +15,7 @@ export const Search = (props) => {
         lightTheme
         // onSubmitEditing={() => alert(`Coucou ${searchValue}`)}
         onFocus={() => setInputFocus(true)}
-        onBlur={() => setInputFocus(false)}
+        // onBlur={() => setInputFocus(false)}
       />
     </View>
   );

@@ -1,52 +1,36 @@
-import React, { useState, useEffect } from "react";
-import { StatusBar } from "react-native";
-import Home from "./src/components/Home";
-import { ListResults } from "./src/components/ListResults";
-import { Search } from "./src/components/Search";
-import { fetchMovies, fetchTopRated } from "./src/services/network";
+import "react-native-gesture-handler";
+import * as React from "react";
+import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
+import SearchScreen from "./src/pages/SearchScreen";
+import MovieDetails from "./src/pages/MovieDetails";
+
+const Stack = createStackNavigator();
 
 export default function App() {
-  const [searchValue, setSeachValue] = useState("");
-  const [movies, setMovies] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [inputFocus, setInputFocus] = useState(false);
-  const [loading, setLoading] = useState(false);
-
-  const searchFilm = (searchedText) => {
-    setSeachValue(searchedText);
-    if (searchedText.length > 3) {
-      fetchMovies(searchValue, currentPage).then((resJson) => {
-        setMovies(resJson.results);
-        setLoading(false);
-      });
-    }
-  };
-
-  const fetchNetworkMovie = () => {
-    setLoading(true);
-    fetchTopRated(currentPage).then((resJson) => {
-      setMovies(resJson.results);
-      setLoading(false);
-    });
-  };
-
-  useEffect(() => {
-    fetchNetworkMovie();
-  }, []);
-
   return (
-    <>
-      <StatusBar backgroundColor="green" barStyle={"light-content"} />
-      <Search
-        searchValue={searchValue}
-        searchFilm={(searchedText) => searchFilm(searchedText)}
-        setInputFocus={setInputFocus}
-      />
-      {inputFocus ? (
-        <ListResults movies={movies} searchValue={searchValue} />
-      ) : (
-        <Home />
-      )}
-    </>
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen
+          name="Home"
+          component={SearchScreen}
+          options={{
+            title: null,
+            headerVisible: false,
+            headerTransparent: true,
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="Details"
+          component={MovieDetails}
+          options={{
+            title: null,
+            headerVisible: false,
+            headerTransparent: true,
+          }}
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }

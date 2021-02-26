@@ -45,3 +45,24 @@ export const fetchTopRated = async (page) => {
     return error;
   }
 };
+
+export const getMovieDetails = async (movieId) => {
+  try {
+    const resFetch = await fetch(
+      BASE_URL +
+        "/movie/" +
+        movieId +
+        "?api_key=" +
+        API_KEY +
+        "&language='fr-FR'",
+      {
+        method: "GET",
+      }
+    );
+    const resToJon = resFetch.json();
+    return resToJon;
+  } catch (error) {
+    console.error("error fetch movie details", error);
+    return error;
+  }
+};
